@@ -1,0 +1,96 @@
+/* Tailwind imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Properties */
+:root {
+    --primary-light: #ffffff; /* White background */
+    --secondary-dark: #1a2332;
+    --accent-blue: #4a9eff;
+    --accent-light-blue: #6bb3ff;
+    --text-dark: #000000; /* Black text */
+    --text-gray: #4b5563;
+    --nav-height: 4.5rem;
+    --dot-color-1: #000000; /* Black */
+    --dot-color-2: #1f1f1f; /* Very dark gray */
+    --dot-color-3: #333333; /* Dark gray */
+    --dot-color-4: #4b4b4b; /* Medium gray */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    background: var(--primary-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.hero {
+    position: relative;
+    min-height: 100vh;
+    background: var(--primary-light);
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, var(--dot-color-1) 2px, transparent 2px),
+                radial-gradient(circle at 80% 30%, var(--dot-color-2) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 40% 80%, var(--dot-color-3) 1px, transparent 1px),
+                radial-gradient(circle at 90% 70%, var(--dot-color-4) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 10% 20%, var(--dot-color-1) 1px, transparent 1px),
+                radial-gradient(circle at 70% 10%, var(--dot-color-2) 1.5px, transparent 1.5px);
+    background-size: 150px 150px, 200px 200px, 120px 120px, 180px 180px, 100px 100px, 160px 160px;
+    opacity: 0.9;
+    animation: floatDots 10s ease-in-out infinite;
+    z-index: 0;
+}
+.flex-shrink-0 {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.logo {
+  font-family: 'Roboto', sans-serif; /* Matches chatbot's font */
+  font-size: 1.5rem; /* Slightly larger than text-xl for prominence */
+  font-weight: 700; /* Matches font-bold */
+  color: #4a9eff; /* Matches --accent-blue from styles.css, similar to chatbot’s #007bff */
+  text-decoration: none; /* Remove default underline */
+  letter-spacing: 0.5px; /* Subtle spacing for readability */
+  transition: color 0.3s ease, transform 0.2s ease; /* Matches chatbot’s button transitions */
+}
+
+.logo:hover {
+  color: #0056b3; /* Darker blue for hover, consistent with chatbot */
+  transform: scale(1.05); /* Subtle zoom effect */
+}
+@keyframes floatDots {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(40px, -60px) rotate(90deg); }
+    50% { transform: translate(-20px, -40px) rotate(180deg); }
+    75% { transform: translate(-60px, 20px) rotate(270deg); }
+}
+.flex-shrink-0 {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}

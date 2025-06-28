@@ -1,0 +1,30 @@
+<section class="chatbot-section">
+    <div class="chatbot-content">
+        <div class="hero-content" *ngIf="!isChatOpen">
+            <div class="hero-text">
+                <h1>AI Interview Chatbot</h1>
+            </div>
+            <div class="hero-description">
+                <p>Boost your interview skills with our AI-powered chatbot. Practice, get feedback, and land your dream job!</p>
+                <button class="learn-more-btn" (click)="openChatbot()">Start Practice</button>
+            </div>
+            <div class="robot-image">
+                <picture>
+                   <source srcset="/assets/robot.png" type="image/png">
+<img src="/assets/robot.png" alt="AI Robot" class="robot-img" />   </picture>
+            </div>
+        </div>
+        <div class="chatbot-container" *ngIf="isChatOpen">
+            <div class="chatbot-messages" id="chatbot-messages" #chatContainer>
+                <div class="message" [ngClass]="message.startsWith('You:') ? 'user-message' : 'bot-message'" *ngFor="let message of chatMessages">
+                    {{ message }}
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="user-input" placeholder="Type your answer..." (keyup.enter)="sendAnswer(userInput.value)" #userInput />
+                <button class="send-btn" (click)="sendAnswer(userInput.value)">Send</button>
+                <button class="close-btn" (click)="closeChatbot()">Close</button>
+            </div>
+        </div>
+    </div>
+</section>

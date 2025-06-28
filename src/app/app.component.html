@@ -1,0 +1,39 @@
+<nav class="bg-white shadow-md fixed w-full z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex-shrink-0">
+        <a [routerLink]="['/']" class="logo">InternReady</a>
+      </div>
+      <div class="nav-links hidden md:flex">
+        <a [routerLink]="['/']" (click)="showPage('home', $event)" class="nav-link">Home</a>
+        <a [routerLink]="['/interview']" (click)="showPage('interview', $event)" class="nav-link">Interview</a>
+        <a [routerLink]="['/cv-review']" class="nav-link">CV Review</a>
+        <a [routerLink]="['/alumni']" class="nav-link">Alumni Companies</a>
+        <a [routerLink]="['/profile']" class="nav-link">My Profile</a>
+        <a [routerLink]="['/resources']" class="nav-link">Career Resources</a>
+      </div>
+      <div class="nav-actions hidden md:flex">
+        <button class="lang-switch">EN</button>
+        <a [routerLink]="['/contact']" class="get-in-touch">Get in Touch</a>
+      </div>
+      <button id="menu-button" class="mobile-menu-btn md:hidden" (click)="toggleMobileMenu()">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+      </button>
+    </div>
+    <div id="mobile-menu" class="md:hidden" [class.active]="mobileMenuOpen">
+      <a [routerLink]="['/']" (click)="showPage('home', $event); toggleMobileMenu()" class="mobile-nav-link">Home</a>
+      <a [routerLink]="['/interview']" (click)="showPage('interview', $event); toggleMobileMenu()" class="mobile-nav-link">Interview</a>
+      <a [routerLink]="['/cv-review']" (click)="toggleMobileMenu()" class="mobile-nav-link">CV Review</a>
+      <a [routerLink]="['/alumni']" (click)="toggleMobileMenu()" class="mobile-nav-link">Alumni Companies</a>
+      <a [routerLink]="['/profile']" (click)="toggleMobileMenu()" class="mobile-nav-link">My Profile</a>
+      <a [routerLink]="['/resources']" (click)="toggleMobileMenu()" class="mobile-nav-link">Career Resources</a>
+      <a [routerLink]="['/contact']" class="get-in-touch mobile-nav-link">Get in Touch</a>
+    </div>
+  </div>
+</nav>
+<div class="pt-[var(--nav-height)]">
+  <app-homepage *ngIf="currentPage === 'home'"></app-homepage>
+  <app-chatbotinterview *ngIf="currentPage === 'interview'"></app-chatbotinterview>
+</div>
