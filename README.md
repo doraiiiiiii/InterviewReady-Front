@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PfeFrontend
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.10.
@@ -57,3 +58,7 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+=======
+# InterReady-Front
+Boost your career with AI-powered tools: an interview chatbot, CV optimizer, and a list of top companies. Start your journey now!
+>>>>>>> 40147078d7082ec59f358596eb703cadc99df387
