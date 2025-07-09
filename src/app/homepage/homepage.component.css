@@ -1,3 +1,55 @@
+/* Animation pour l'écriture (apparition) */
+.letter.visible {
+    display: inline-block;
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+/* Animation pour la suppression (disparition) */
+.letter:not(.visible) {
+    display: inline-block;
+    opacity: 1;
+    animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+/* Styles pour .floating-action (sans pulsation) */
+.floating-action {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 4rem;
+    height: 4rem;
+    background: var(--accent-blue);
+    color: var(--text-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 25px rgba(74, 158, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.floating-action:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 12px 35px rgba(74, 158, 255, 0.5);
+}
+
+/* Styles existants (inchangés) */
 .hero-content {
     position: relative;
     z-index: 2;
@@ -19,7 +71,7 @@
     line-height: 1.1;
     margin-bottom: 1.5rem;
     letter-spacing: -0.02em;
-    color: var(--text-dark); /* Black text */
+    color: var(--text-dark);
 }
 
 .hero-description {
@@ -29,7 +81,7 @@
 
 .hero-description p {
     font-size: 1.2rem;
-    color: var(--text-dark); /* Black text */
+    color: var(--text-dark);
     margin-bottom: 2rem;
     line-height: 1.7;
 }
@@ -39,7 +91,7 @@
     align-items: center;
     gap: 0.75rem;
     background: var(--accent-blue);
-    color: var(--text-white); /* White text for button contrast */
+    color: var(--text-white);
     padding: 1rem 2rem;
     border-radius: 12px;
     text-decoration: none;
@@ -62,7 +114,7 @@
 
 .features {
     padding: 6rem 0;
-    background: var(--primary-light); /* White background */
+    background: var(--primary-light);
     position: relative;
 }
 
@@ -87,7 +139,7 @@
     font-size: clamp(2.5rem, 5vw, 3.5rem);
     font-weight: 600;
     margin-bottom: 4rem;
-    color: var(--text-dark); /* Black text */
+    color: var(--text-dark);
 }
 
 .features-grid {
@@ -98,7 +150,7 @@
 }
 
 .feature-card {
-    background: rgba(0, 0, 0, 0.05); /* Light gray background for contrast */
+    background: rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 16px;
     padding: 2.5rem;
@@ -116,19 +168,19 @@
 .feature-card h3 {
     font-size: 1.4rem;
     font-weight: 600;
-    color: var(--text-dark); /* Black text */
+    color: var(--text-dark);
     margin-bottom: 1.5rem;
 }
 
 .feature-card p {
-    color: var(--text-dark); /* Black text */
+    color: var(--text-dark);
     line-height: 1.7;
     font-size: 1.05rem;
 }
 
 .testimonials {
     padding: 6rem 0;
-    background: var(--primary-light); /* White background */
+    background: var(--primary-light);
 }
 
 .testimonials-content {
@@ -142,7 +194,7 @@
     font-size: clamp(2.5rem, 5vw, 3.5rem);
     font-weight: 600;
     margin-bottom: 4rem;
-    color: var(--text-dark); /* Black text */
+    color: var(--text-dark);
 }
 
 .testimonials-grid {
@@ -153,7 +205,7 @@
 }
 
 .testimonial-card {
-    background: rgba(0, 0, 0, 0.05); /* Light gray background */
+    background: rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 16px;
     padding: 2.5rem;
@@ -169,7 +221,7 @@
 }
 
 .testimonial-card p {
-    color: var(--text-dark); /* Black text */
+    color: var(--text-dark);
     font-style: italic;
     margin-bottom: 1.5rem;
     line-height: 1.7;
@@ -177,42 +229,9 @@
 }
 
 .testimonial-author {
-    color: var(--text-dark); /* Black text */
+    color: var(--text-dark);
     font-weight: 600;
     font-size: 0.95rem;
-}
-
-.floating-action {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 4rem;
-    height: 4rem;
-    background: var(--accent-blue);
-    color: var(--text-white); /* White text for contrast */
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    box-shadow: 0 8px 25px rgba(74, 158, 255, 0.4);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 999;
-}
-
-.floating-action:hover {
-    transform: scale(1.1) rotate(15deg);
-    box-shadow: 0 12px 35px rgba(74, 158, 255, 0.5);
-}
-
-@keyframes pulse {
-    0%, 100% { box-shadow: 0 8px 25px rgba(74, 158, 255, 0.4); }
-    50% { box-shadow: 0 8px 25px rgba(74, 158, 255, 0.6); }
-}
-
-.floating-action {
-    animation: pulse 2s ease-in-out infinite;
 }
 
 @media (max-width: 767px) {
@@ -224,4 +243,16 @@
     .testimonials-content {
         padding: 0 1rem;
     }
+}
+/* État initial : sections cachées */
+.features-content, .testimonials-content {
+    opacity: 0;
+    transform: translateY(50px); /* Déplace les sections vers le bas */
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* État visible : sections apparaissent */
+.features-content.visible, .testimonials-content.visible {
+    opacity: 1;
+    transform: translateY(0); /* Remet les sections à leur position normale */
 }

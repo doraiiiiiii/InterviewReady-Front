@@ -1,0 +1,58 @@
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1>Optimize Your CV</h1>
+      <div class="hero-description">
+        <p>Upload your CV and let our AI-powered tool analyze it for errors, poor structure, or missing elements. Get tailored suggestions to make your CV stand out!</p>
+        <button class="learn-more-btn" (click)="scrollToUpload()">
+          Start Now
+          <svg viewBox="0 0 24 24">
+            <path d="M5 12h14m-7-7l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="cv-image">
+      <img src="assets/cvp.jpg" alt="CV Preview" class="cv-img">
+    </div>
+  </div>
+</section>
+
+<section class="cv-upload" #uploadSection>
+  <div class="cv-upload-content">
+    <h2>Upload Your CV</h2>
+    <div class="upload-container">
+      <input type="file" accept=".pdf,.doc,.docx" (change)="onFileSelected($event)" class="file-input">
+      <button class="upload-btn" [disabled]="!selectedFile" (click)="analyzeCv()">Analyze CV</button>
+    </div>
+    <p *ngIf="uploadError" class="error-message">{{ uploadError }}</p>
+  </div>
+</section>
+
+<section class="results" *ngIf="analysisResults">
+  <div class="results-content">
+    <h2>Analysis Results</h2>
+    <div class="results-grid">
+      <div class="result-card" *ngFor="let issue of analysisResults.issues; let i = index" [attr.data-animate]="'result-' + i">
+        <h3>{{ issue.title }}</h3>
+        <p>{{ issue.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="suggestions" *ngIf="analysisResults">
+  <div class="suggestions-content">
+    <h2>Suggestions</h2>
+    <div class="suggestions-grid">
+      <div class="suggestion-card" *ngFor="let suggestion of analysisResults.suggestions; let i = index" [attr.data-animate]="'suggestion-' + i">
+        <h3>{{ suggestion.title }}</h3>
+        <p>{{ suggestion.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="floating-action" (click)="scrollToUpload()">
+  📄
+</div>

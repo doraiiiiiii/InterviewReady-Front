@@ -1,0 +1,127 @@
+.company-listing {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: white;
+  text-align: center;
+}
+
+.company-listing-content {
+  margin-top: 2rem; /* Space above title */
+  padding: 1.5rem;
+  background: rgba(74, 158, 255, 0.05); /* Subtle background for prominence */
+  border-radius: 12px;
+}
+
+.company-listing-content h2 {
+
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  font-weight: 300;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+  color: #333;
+}
+
+.listing-description {
+  font-size: 1.1rem; /* Slightly larger for readability */
+  font-weight: 500; /* Medium weight for prominence */
+  color: #333; /* Darker for contrast */
+  line-height: 1.5;
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+}
+
+.company-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.company-card {
+  background: #F9FAFB;
+  padding: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  height: 220px; /* Fixed height for uniform cards */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Push button to bottom */
+  opacity: 1; /* Ensure visibility */
+  transform: none;
+}
+
+.company-card h3 {
+  font-size: 1rem; /* Small to fit fixed height */
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.company-card p {
+  font-size: 0.8rem; /* Small to fit fixed height */
+  color: #555;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+  flex-grow: 1; /* Allow content to take available space */
+}
+
+.linkedin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #4A9EFF;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(74, 158, 255, 0.3);
+  align-self: flex-start; /* Align button at the start */
+}
+
+.linkedin-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(74, 158, 255, 0.4);
+  background: #3A8EFF;
+}
+
+@media (max-width: 767px) {
+  .company-listing {
+    padding: 1rem;
+  }
+
+  .company-listing-content {
+    margin-top: 1.5rem;
+    padding: 1rem;
+  }
+
+  .company-listing-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .listing-description {
+    font-size: 0.9rem;
+  }
+
+  .company-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .company-card {
+    padding: 1rem;
+    height: 200px; /* Slightly smaller for mobile */
+  }
+
+  .linkedin-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

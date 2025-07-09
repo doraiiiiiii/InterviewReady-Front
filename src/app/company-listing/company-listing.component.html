@@ -1,0 +1,14 @@
+<section class="company-listing">
+  <div class="company-listing-content">
+    <h2>Internship Opportunities in Tunisia</h2>
+    <p class="listing-description">Explore internship opportunities in software development and IT solutions across leading companies in Tunisia. Connect with these organizations via LinkedIn to kickstart your tech career!</p>
+    <div class="company-grid">
+      <div class="company-card" *ngFor="let company of companies; let i = index" [attr.data-animate]="'company-' + i">
+        <h3>{{ company.name }} ({{ company.interns }} {{ company.interns === 1 ? 'Intern' : 'Interns' }})</h3>
+        <p><strong>Sector:</strong> {{ company.sector }}</p>
+        <p><strong>Description:</strong> {{ company.description }}</p>
+        <a [href]="company.linkedin" target="_blank" class="linkedin-btn">Contact on LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>

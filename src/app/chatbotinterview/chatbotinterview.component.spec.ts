@@ -12,13 +12,16 @@ import { CommonModule } from '@angular/common';
 export class ChatbotInterviewComponent implements OnInit {
   isChatOpen: boolean = false;
   chatMessages: string[] = [];
-  @ViewChild('chatContainer') chatContainer!: ElementRef;
+  @ViewChild('chatContainer') chatContainer: ElementRef | undefined;
   currentQuestionIndex: number | null = null;
   interviewStarted: boolean = false;
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Setup scroll reveal for feature cards and FAQ items
+    this.setupScrollReveal();
+  }
 
   openChatbot() {
     console.log('openChatbot called');
@@ -98,9 +101,38 @@ export class ChatbotInterviewComponent implements OnInit {
     }
   }
 
+  toggleFaq(event: Event) {
+    const faqItem = (event.currentTarget as HTMLElement).parentElement;
+    if (faqItem) {
+      faqItem.classList.toggle('active');
+    }
+  }
+
   private scrollToBottom() {
     setTimeout(() => {
-      this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      if (this.chatContainer?.nativeElement) {
+        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      }
     }, 0);
+  }
+
+  private setupScrollReveal() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { 
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    const items = document.querySelectorAll('.feature-card, .faq-item');
+    items.forEach(item => observer.observe(item));
   }
 }

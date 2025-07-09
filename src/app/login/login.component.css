@@ -1,0 +1,170 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-light); /* Solid white, assuming --primary-light is #fff */
+    z-index: 10; /* Below nav (z-index: 1000) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.modal-content {
+    background: var(--primary-light);
+    border-radius: 12px; /* Matches learn-more-btn */
+    padding: 2rem;
+    width: 100%;
+    max-width: 500px; /* Matches hero-description max-width */
+    margin: calc(var(--nav-height) + 2rem) auto 2rem; /* Offset for fixed nav */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Matches learn-more-btn shadow */
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0.9;
+}
+
+.modal-content:hover {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-gray);
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.modal-close:hover {
+    color: var(--accent-blue);
+    transform: rotate(90deg);
+}
+
+.auth-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    background: rgba(0, 0, 0, 0.03);
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+}
+
+.tab input[type="radio"] {
+    display: none;
+}
+
+.tab span {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    font-weight: 600; /* Matches learn-more-btn */
+    color: var(--text-gray);
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+    border-radius: 6px;
+}
+
+.tab input[type="radio"]:checked + span {
+    color: var(--accent-blue);
+    background: var(--text-white);
+    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.form-group label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500; /* Matches nav-link */
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem; /* Matches nav-link */
+    padding: 0.75rem 1rem;
+    border: none;
+    border-bottom: 2px solid var(--border-gray);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.03);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-bottom-color: var(--accent-blue);
+    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.form-group input::placeholder {
+    color: var(--text-gray);
+    opacity: 0.7;
+}
+
+.submit-btn {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem; /* Matches learn-more-btn */
+    font-weight: 600; /* Matches learn-more-btn */
+    color: var(--text-white);
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-dark-blue));
+    padding: 1rem 2rem; /* Matches learn-more-btn */
+    border: none;
+    border-radius: 12px; /* Matches learn-more-btn */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(74, 158, 255, 0.3);
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, var(--accent-dark-blue), var(--accent-blue));
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(74, 158, 255, 0.4);
+}
+
+@media (max-width: 767px) {
+    .modal-content {
+        padding: 1.5rem;
+        max-width: 90%;
+        margin: calc(var(--nav-height) + 1rem) auto 1rem;
+    }
+
+    .auth-tabs {
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group input {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .submit-btn {
+        padding: 0.75rem 1.5rem;
+    }
+}
