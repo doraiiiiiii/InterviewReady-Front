@@ -244,6 +244,7 @@
         padding: 0 1rem;
     }
 }
+
 /* État initial : sections cachées */
 .features-content, .testimonials-content {
     opacity: 0;

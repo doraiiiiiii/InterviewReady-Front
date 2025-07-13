@@ -1,91 +1,150 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { timeout } from 'rxjs/operators';
+import { TimeoutError } from 'rxjs';
+
+interface AnalysisResult {
+  issues: { title: string; description: string; corrections: string | null }[];
+  suggestions: { title: string; description: string }[];
+}
 
 @Component({
   selector: 'app-cv-optimizer',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './cv-optimizer.component.html',
   styleUrls: ['./cv-optimizer.component.css']
 })
-export class CvOptimizerComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('uploadSection') uploadSection!: ElementRef;
+export class CvOptimizerComponent implements OnInit {
+  isUploadOpen: boolean = false;
   selectedFile: File | null = null;
   uploadError: string | null = null;
-  analysisResults: any = null;
-  private observer: IntersectionObserver | null = null;
+  analysisResults: AnalysisResult | null = null;
+  @ViewChild('resultsContainer') resultsContainer: ElementRef | undefined;
 
-  ngOnInit() {}
+  constructor(private http: HttpClient) {}
 
-  ngAfterViewInit() {
-    this.setupIntersectionObserver();
+  ngOnInit() {
+    this.setupScrollReveal();
   }
 
-  ngOnDestroy() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+  openUpload() {
+    this.isUploadOpen = true;
+    console.log('Upload section opened at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
   }
 
-  scrollToUpload() {
-    this.uploadSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
+  closeUpload() {
+    this.isUploadOpen = false;
+    this.selectedFile = null;
+    this.uploadError = null;
+    this.analysisResults = null;
+    console.log('Upload section closed at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
   }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-      if (validTypes.includes(file.type)) {
-        this.selectedFile = file;
-        this.uploadError = null;
-      } else {
-        this.uploadError = 'Please upload a valid file (.pdf, .doc, or .docx)';
-        this.selectedFile = null;
-      }
+      this.selectedFile = input.files[0];
+      this.uploadError = null;
+      console.log('File selected:', this.selectedFile.name, 'at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
+    } else {
+      console.log('No file selected at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
     }
   }
 
   analyzeCv() {
+    console.log('Analyze CV clicked at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
     if (!this.selectedFile) {
       this.uploadError = 'No file selected. Please upload a CV.';
+      console.error('No file selected at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
       return;
     }
 
-    // Simulate CV analysis (replace with actual backend API call)
-    this.analysisResults = {
-      issues: [
-        { title: 'Missing Contact Information', description: 'Your CV lacks a phone number or email address, which are essential for recruiters to contact you.' },
-        { title: 'Inconsistent Formatting', description: 'Font sizes and styles vary across sections, making the CV look unprofessional.' },
-        { title: 'Weak Action Verbs', description: 'Using generic verbs like "did" or "worked" instead of strong verbs like "developed" or "implemented".' }
-      ],
-      suggestions: [
-        { title: 'Add Contact Details', description: 'Include a professional email and phone number at the top of your CV.' },
-        { title: 'Use Consistent Formatting', description: 'Ensure uniform font sizes, styles, and spacing throughout your CV.' },
-        { title: 'Incorporate Keywords', description: 'Add industry-specific keywords to pass Applicant Tracking Systems (ATS).' }
-      ]
-    };
-  }
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+    console.log('Sending request to http://localhost:8081/api/cv/analyze with file:', this.selectedFile.name);
 
-  setupIntersectionObserver() {
-    const options = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1
-    };
+    this.http.post('http://localhost:8081/api/cv/analyze', formData)
+      .pipe(timeout(180000)) // 3-minute timeout
+      .subscribe({
+        next: (response: any) => {
+          console.log('Raw analysis response received at', new Date().toLocaleString('en-US', { timeZone: 'CET' }), ':', JSON.stringify(response, null, 2));
+          console.log('Response structure:', response.structure);
+          console.log('Response grammar_errors:', response.grammar_errors);
+          console.log('Response quality:', response.quality);
+          try {
+            if (!response || typeof response !== 'object') {
+              this.uploadError = 'Invalid response format at ' + new Date().toLocaleString('en-US', { timeZone: 'CET' });
+              return;
+            }
 
-    this.observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          const cards = entry.target.querySelectorAll('.result-card, .suggestion-card');
-          cards.forEach((card: Element) => card.classList.add('in-view'));
-          this.observer?.unobserve(entry.target);
+            this.analysisResults = {
+              issues: [
+                ...(response.structure ? Object.keys(response.structure).map(key => ({
+                  title: key.replace('_', ' ').toUpperCase(),
+                  description: response.structure[key]
+                    ? `${key.replace('_', ' ')} section detected.`
+                    : `${key.replace('_', ' ')} section missing.`,
+                  corrections: response.structure[key] ? null : `Add a ${key.replace('_', ' ')} section.`
+                })) : []),
+                ...(response.grammar_errors ? response.grammar_errors.map((error: any) => ({
+                  title: 'Grammar/Spelling Error',
+                  description: error.message,
+                  corrections: error.suggestions && error.suggestions.length > 0
+                    ? error.suggestions.join(', ')
+                    : 'No suggestions available.'
+                })) : [])
+              ],
+              suggestions: [
+                ...(response.quality ? Object.keys(response.quality).map(key => ({
+                  title: key.replace('_', ' ').toUpperCase(),
+                  description: response.quality[key]
+                })) : [])
+              ]
+            };
+            console.log('analysisResults populated:', JSON.stringify(this.analysisResults, null, 2));
+            this.uploadError = null;
+          } catch (e) {
+            const error = e as Error; // Type assertion
+            this.uploadError = `Error processing response at ${new Date().toLocaleString('en-US', { timeZone: 'CET' })}: ${error.message}`;
+            console.error('Processing error at', new Date().toLocaleString('en-US', { timeZone: 'CET' }), ':', e);
+          }
+          this.scrollToResults();
+        },
+        error: (error: HttpErrorResponse | TimeoutError) => {
+          this.uploadError = `Error analyzing CV: ${error instanceof HttpErrorResponse ? `${error.status} - ${error.statusText}` : 'Request timed out'} at ${new Date().toLocaleString('en-US', { timeZone: 'CET' })}`;
+          console.error('Analysis error at', new Date().toLocaleString('en-US', { timeZone: 'CET' }), ':', error);
+        },
+        complete: () => {
+          console.log('Request completed at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
         }
       });
-    }, options);
+  }
 
-    const sections = document.querySelectorAll('.cv-upload-content, .results-content, .suggestions-content');
-    sections.forEach(section => this.observer?.observe(section));
+  private scrollToResults() {
+    setTimeout(() => {
+      if (this.resultsContainer?.nativeElement) {
+        this.resultsContainer.nativeElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 0);
+  }
+
+  private setupScrollReveal() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    const items = document.querySelectorAll('.result-card');
+    items.forEach(item => observer.observe(item));
   }
 }

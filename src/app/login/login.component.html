@@ -1,1 +1,39 @@
-<p>login works!</p>
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal()">×</button>
+    <h2>Login</h2>
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="loginForm.email"
+          name="email"
+          placeholder="Enter your email"
+          required
+          [class.error]="errorMessage && !loginForm.email"
+        />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          [(ngModel)]="loginForm.password"
+          name="password"
+          placeholder="Enter your password"
+          required
+          [class.error]="errorMessage && !loginForm.password"
+        />
+      </div>
+      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <button type="submit" class="submit-btn" [disabled]="loading">
+        {{ loading ? 'Logging in...' : 'Login' }}
+      </button>
+    </form>
+    <p class="signup-link">
+      Don't have an account? <a href="#" (click)="switchToSignup($event)">Sign up</a>
+    </p>
+  </div>
+</div>

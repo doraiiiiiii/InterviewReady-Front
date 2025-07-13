@@ -1,11 +1,12 @@
-import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [CommonModule, LoginComponent],
+  imports: [CommonModule, HttpClientModule, LoginComponent],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css']
 })
@@ -16,35 +17,34 @@ export class HomepageComponent implements OnInit, OnDestroy, AfterViewInit {
   private animationInterval: any;
   private observer: IntersectionObserver | null = null;
 
+  constructor(private cdr: ChangeDetectorRef) {}
+
   ngOnInit() {
-    // Initialiser tous les caractères comme invisibles
     this.charStates = new Array(this.titleText.length).fill(false);
     this.startAnimation();
   }
 
   ngAfterViewInit() {
-    // Configurer l'IntersectionObserver après que la vue soit initialisée
     this.setupIntersectionObserver();
   }
 
   ngOnDestroy() {
-    // Nettoyer l'intervalle pour éviter les fuites de mémoire
     if (this.animationInterval) {
       clearInterval(this.animationInterval);
     }
-    // Nettoyer l'IntersectionObserver
     if (this.observer) {
       this.observer.disconnect();
     }
   }
 
   toggleAuthModal() {
-    console.log('Get Started Now clicked, showAuthModal:', this.showAuthModal);
+    console.log('Toggling modal, showAuthModal:', this.showAuthModal); // Debug
     this.showAuthModal = !this.showAuthModal;
+    this.cdr.detectChanges();
   }
 
   getDelay(index: number): string {
-    return `${index * 0.1}s`; // Délai pour chaque caractère
+    return `${index * 0.1}s`;
   }
 
   startAnimation() {
@@ -74,30 +74,26 @@ export class HomepageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
       this.charStates = [...this.charStates];
-    }, 100); // Intervalle de 100ms entre chaque caractère
+      this.cdr.detectChanges();
+    }, 100);
   }
 
   setupIntersectionObserver() {
-    // Options pour l'IntersectionObserver
     const options = {
-      root: null, // Utiliser le viewport comme racine
+      root: null,
       rootMargin: '0px',
-      threshold: 0.1 // Déclencher quand 10% de l'élément est visible
+      threshold: 0.1
     };
 
-    // Callback pour l'IntersectionObserver
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          // Ajouter la classe 'visible' quand l'élément entre dans le viewport
           entry.target.classList.add('visible');
-          // Optionnel : arrêter d'observer cet élément après l'animation
           this.observer?.unobserve(entry.target);
         }
       });
     }, options);
 
-    // Observer les sections 'features-content' et 'testimonials-content'
     const featuresSection = document.querySelector('.features-content');
     const testimonialsSection = document.querySelector('.testimonials-content');
 

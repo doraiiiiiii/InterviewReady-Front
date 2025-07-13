@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './company-listing.component.html',
   styleUrls: ['./company-listing.component.css']
 })
-export class CompanyListingComponent {
+export class CompanyListingComponent implements AfterViewInit {
   companies = [
     {
       name: 'SFM Technologies',
@@ -221,4 +221,26 @@ export class CompanyListingComponent {
       linkedin: 'https://www.linkedin.com/company/sotetel'
     }
   ];
+
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
+
+  ngAfterViewInit() {
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          this.renderer.addClass(entry.target, 'visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    const companyCards = this.el.nativeElement.querySelectorAll('.company-card');
+    companyCards.forEach((card: HTMLElement) => observer.observe(card));
+  }
 }

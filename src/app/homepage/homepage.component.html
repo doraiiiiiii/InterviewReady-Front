@@ -1,7 +1,7 @@
 <section class="hero">
   <div class="hero-content">
     <div class="hero-text">
-      <h1>
+      <h1 aria-label="Your Dream Internship Within Reach!">
         <span *ngFor="let char of titleText; let i = index" class="letter" [ngClass]="{'visible': charStates[i]}" [style.animationDelay]="getDelay(i)">
           {{ char === '|' ? '' : (char === ' ' ? '\u00A0' : char) }}
           <br *ngIf="char === '|'">
@@ -46,8 +46,7 @@
     <div class="testimonials-grid">
       <div class="testimonial-card">
         <p>"The AI chatbot helped me practice until I felt confident, and I landed my dream internship!"</p>
-        <p class="testimonial-author">- Mariem Aouani, Computer science engineering student 
-</p>
+        <p class="testimonial-author">- Mariem Aouani, Computer science engineering student</p>
       </div>
       <div class="testimonial-card">
         <p>"The CV optimizer gave me insights I never would have thought of. My resume looks incredibly professional now, and I'm getting more interview calls."</p>
@@ -57,9 +56,6 @@
   </div>
 </section>
 
-<div class="floating-action">
-  🚀
-</div>
+<div class="floating-action" (click)="toggleAuthModal()">🚀</div>
 
-<!-- Login Modal -->
 <app-login *ngIf="showAuthModal" (close)="toggleAuthModal()"></app-login>
