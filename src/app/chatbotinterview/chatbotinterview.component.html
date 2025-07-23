@@ -1,3 +1,4 @@
+
 <section class="chatbot-section">
   <div class="chatbot-content">
     <!-- Hero and Chatbot Container -->
@@ -17,15 +18,18 @@
       </div>
     </div>
     <div class="chatbot-container" *ngIf="isChatOpen">
+      <div class="chatbot-header">
+        <h2>Interview Practice</h2>
+        <button class="close-btn" (click)="closeChatbot()">×</button>
+      </div>
       <div class="chatbot-messages" id="chatbot-messages" #chatContainer>
-        <div class="message" [ngClass]="message.startsWith('You:') ? 'user-message' : 'bot-message'" *ngFor="let message of chatMessages">
-          {{ message }}
+        <div *ngFor="let message of chatMessages; let i = index" class="message" [ngClass]="message.isUser ? 'user-message' : 'bot-message'">
+          {{ message.text }}
         </div>
       </div>
       <div class="chatbot-input">
         <input type="text" id="user-input" placeholder="Type your answer..." (keyup.enter)="sendAnswer(userInput.value)" #userInput />
         <button class="send-btn" (click)="sendAnswer(userInput.value)">Send</button>
-        <button class="close-btn" (click)="closeChatbot()">Close</button>
       </div>
     </div>
   </div>
@@ -58,7 +62,7 @@
     <div class="faq-accordion">
       <div class="faq-item" data-animate="faq-1">
         <h3 class="faq-question" (click)="toggleFaq($event)">How does it work?</h3>
-        <p class="faq-answer">Our chatbot simulates a job interview. Ask questions or respond to prompts, and receive personalized advice.</p>
+        <p class="faq-answer">Our chatbot simulates a job interview. Answer questions, get feedback, and improve your skills.</p>
       </div>
       <div class="faq-item" data-animate="faq-2">
         <h3 class="faq-question" (click)="toggleFaq($event)">Is it free?</h3>
@@ -66,7 +70,7 @@
       </div>
       <div class="faq-item" data-animate="faq-3">
         <h3 class="faq-question" (click)="toggleFaq($event)">Can I practice specific skills?</h3>
-        <p class="faq-answer">Yes, you can tailor your practice to focus on specific skills or industries using our customizable scenarios.</p>
+        <p class="faq-answer">Yes, the chatbot provides questions tailored to technical skills and suggests practice platforms.</p>
       </div>
     </div>
   </section>

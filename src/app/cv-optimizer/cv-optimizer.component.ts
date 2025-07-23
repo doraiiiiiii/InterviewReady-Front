@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { timeout } from 'rxjs/operators';
+import { timeout, retry } from 'rxjs/operators';
 import { TimeoutError } from 'rxjs';
 
 interface AnalysisResult {
@@ -19,12 +19,12 @@ interface AnalysisResult {
 })
 export class CvOptimizerComponent implements OnInit {
   isUploadOpen: boolean = false;
-  selectedFile: File | null = null;
+  selectedFiles: File[] = []; // Support for multiple files
   uploadError: string | null = null;
   analysisResults: AnalysisResult | null = null;
   @ViewChild('resultsContainer') resultsContainer: ElementRef | undefined;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.setupScrollReveal();
@@ -32,12 +32,13 @@ export class CvOptimizerComponent implements OnInit {
 
   openUpload() {
     this.isUploadOpen = true;
+    this.cdr.detectChanges(); // Force change detection
     console.log('Upload section opened at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
   }
 
   closeUpload() {
     this.isUploadOpen = false;
-    this.selectedFile = null;
+    this.selectedFiles = [];
     this.uploadError = null;
     this.analysisResults = null;
     console.log('Upload section closed at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
@@ -46,34 +47,37 @@ export class CvOptimizerComponent implements OnInit {
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.selectedFile = input.files[0];
+      this.selectedFiles = Array.from(input.files);
       this.uploadError = null;
-      console.log('File selected:', this.selectedFile.name, 'at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
+      console.log('Files selected:', this.selectedFiles.map(f => f.name), 'at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
     } else {
-      console.log('No file selected at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
+      console.log('No files selected at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
     }
   }
 
   analyzeCv() {
     console.log('Analyze CV clicked at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
-    if (!this.selectedFile) {
-      this.uploadError = 'No file selected. Please upload a CV.';
-      console.error('No file selected at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
+    if (this.selectedFiles.length === 0) {
+      this.uploadError = 'No files selected. Please upload a CV.';
+      console.error('No files selected at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
       return;
     }
 
     const formData = new FormData();
-    formData.append('file', this.selectedFile);
-    console.log('Sending request to http://localhost:8081/api/cv/analyze with file:', this.selectedFile.name);
+    this.selectedFiles.forEach(file => formData.append('file', file)); // Match server expectation
+    for (let pair of formData.entries()) {
+      console.log('FormData entry:', pair[0], pair[1]);
+    }
+    console.log('Sending request to http://localhost:8081/api/cv/analyze with files:', this.selectedFiles.map(f => f.name));
 
-    this.http.post('http://localhost:8081/api/cv/analyze', formData)
-      .pipe(timeout(180000)) // 3-minute timeout
+    this.http.post('http://localhost:8080/api/cv/analyze', formData)
+      .pipe(
+        timeout(300000), // Increased to 5 minutes
+        retry(2) // Retry up to 2 times on failure
+      )
       .subscribe({
         next: (response: any) => {
           console.log('Raw analysis response received at', new Date().toLocaleString('en-US', { timeZone: 'CET' }), ':', JSON.stringify(response, null, 2));
-          console.log('Response structure:', response.structure);
-          console.log('Response grammar_errors:', response.grammar_errors);
-          console.log('Response quality:', response.quality);
           try {
             if (!response || typeof response !== 'object') {
               this.uploadError = 'Invalid response format at ' + new Date().toLocaleString('en-US', { timeZone: 'CET' });
@@ -89,7 +93,7 @@ export class CvOptimizerComponent implements OnInit {
                     : `${key.replace('_', ' ')} section missing.`,
                   corrections: response.structure[key] ? null : `Add a ${key.replace('_', ' ')} section.`
                 })) : []),
-                ...(response.grammar_errors ? response.grammar_errors.map((error: any) => ({
+                ...(response.grammarErrors ? response.grammarErrors.map((error: any) => ({
                   title: 'Grammar/Spelling Error',
                   description: error.message,
                   corrections: error.suggestions && error.suggestions.length > 0
@@ -105,16 +109,22 @@ export class CvOptimizerComponent implements OnInit {
               ]
             };
             console.log('analysisResults populated:', JSON.stringify(this.analysisResults, null, 2));
+            this.cdr.detectChanges(); // Force UI update after setting analysisResults
             this.uploadError = null;
+            // Re-run scroll reveal after data is available
+            setTimeout(() => this.setupScrollReveal(), 0);
           } catch (e) {
-            const error = e as Error; // Type assertion
+            const error = e as Error;
             this.uploadError = `Error processing response at ${new Date().toLocaleString('en-US', { timeZone: 'CET' })}: ${error.message}`;
             console.error('Processing error at', new Date().toLocaleString('en-US', { timeZone: 'CET' }), ':', e);
           }
           this.scrollToResults();
         },
         error: (error: HttpErrorResponse | TimeoutError) => {
-          this.uploadError = `Error analyzing CV: ${error instanceof HttpErrorResponse ? `${error.status} - ${error.statusText}` : 'Request timed out'} at ${new Date().toLocaleString('en-US', { timeZone: 'CET' })}`;
+          console.error('Full error details:', error);
+          this.uploadError = `Error analyzing CV: ${error instanceof HttpErrorResponse 
+            ? `${error.status} - ${error.statusText} - ${JSON.stringify(error.error) || 'No details'}` 
+            : 'Request timed out'} at ${new Date().toLocaleString('en-US', { timeZone: 'CET' })}`;
           console.error('Analysis error at', new Date().toLocaleString('en-US', { timeZone: 'CET' }), ':', error);
         },
         complete: () => {
@@ -138,6 +148,7 @@ export class CvOptimizerComponent implements OnInit {
           if (entry.isIntersecting) {
             entry.target.classList.add('in-view');
             observer.unobserve(entry.target);
+            console.log('IntersectionObserver triggered for', entry.target);
           }
         });
       },
@@ -146,5 +157,11 @@ export class CvOptimizerComponent implements OnInit {
 
     const items = document.querySelectorAll('.result-card');
     items.forEach(item => observer.observe(item));
+    console.log('Setup scroll reveal for', items.length, 'result cards');
+  }
+
+  removeFile(file: File): void {
+    this.selectedFiles = this.selectedFiles.filter(f => f !== file);
+    console.log('Removed file:', file.name, 'at', new Date().toLocaleString('en-US', { timeZone: 'CET' }));
   }
 }

@@ -90,9 +90,9 @@
 .upload-container {
   width: 100%;
   max-width: 800px;
-  background: rgba(0, 0, 0, 0.05);
+  background: #fff;
   border-radius: 16px;
-  padding: 2.5rem;
+  padding: 2rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   margin: 2rem auto;
 }
@@ -104,19 +104,108 @@
   align-items: center;
 }
 
-.upload-section input[type="file"] {
-  padding: 0.75rem;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #333;
-  background: #F9FAFB;
+.file-upload-area {
+  width: 100%;
+  display: flex;
+  gap: 2rem;
 }
 
-.upload-section input[type="file"]:focus {
-  outline: none;
-  border-color: #4A9EFF;
-  box-shadow: 0 0 5px rgba(74, 158, 255, 0.3);
+.file-drop-zone {
+  flex: 1;
+  border: 2px dashed #4A9EFF;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.file-drop-zone:hover {
+  border-color: #4095e6;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  color: #4A9EFF;
+  margin-bottom: 1rem;
+}
+
+.file-drop-zone p {
+  color: #555;
+  margin: 0.5rem 0;
+}
+
+.file-upload-btn {
+  background: #4A9EFF;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  pointer-events: auto; /* Ensure pointer events are enabled */
+}
+
+.file-upload-btn:hover {
+  background-color: #4095e6;
+}
+
+.uploaded-files {
+  flex: 1;
+  padding: 1rem;
+}
+
+.uploaded-files p {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.file-icon {
+  margin-right: 1rem;
+  color: #4A9EFF;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.file-item.psd .file-icon { background: #ff4444; color: white; }
+.file-item.pdf .file-icon { background: #ff8800; color: white; }
+.file-item.ai .file-icon { background: #ffcc00; color: #333; }
+.file-item.png .file-icon { background: #007bff; color: white; }
+
+.file-name {
+  flex-grow: 1;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.remove-file {
+  color: #D32F2F;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.remove-file:hover {
+  color: #B71C1C;
+}
+
+.file-input {
+  display: none;
 }
 
 .send-btn,

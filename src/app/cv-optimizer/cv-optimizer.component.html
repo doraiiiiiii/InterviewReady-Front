@@ -9,18 +9,34 @@
         <p>Upload your CV and let our AI-powered tool analyze it for errors, poor structure, or missing elements.</p>
         <button class="learn-more-btn" (click)="openUpload()">Upload CV</button>
       </div>
-       <div class="robot-image">
-      <img src="assets/cvp.jpg" alt="CV Preview" class="robot-img">
-    </div>
+      <div class="robot-image">
+        <img src="assets/cvp.jpg" alt="CV Preview" class="robot-img">
+      </div>
     </div>
     <div class="upload-container" *ngIf="isUploadOpen">
       <div class="upload-section">
-        <input type="file" id="cv-upload" accept=".pdf" (change)="onFileSelected($event)" />
+        <div class="file-upload-area">
+          <label class="file-drop-zone">
+            <input type="file" id="cv-upload" accept=".pdf,Word,Psd" (change)="onFileSelected($event)" class="file-input" multiple />
+            <div class="upload-icon">↑</div>
+            <p>Drag and Drop files to upload</p>
+            <label for="cv-upload" class="file-upload-btn">Browse</label>
+            <p>Supported files: PDF,WORD,PSD</p>
+          </label>
+          <div class="uploaded-files">
+            <p>Uploaded files</p>
+            <div *ngFor="let file of selectedFiles" class="file-item">
+              <span class="file-icon">{{ file.name.split('.').pop() }}</span>
+              <span class="file-name">{{ file.name }}</span>
+              <span class="remove-file" (click)="removeFile(file)">×</span>
+            </div>
+          </div>
+        </div>
         <button class="send-btn" (click)="analyzeCv()">Analyze CV</button>
         <button class="close-btn" (click)="closeUpload()">Close</button>
         <p *ngIf="uploadError" class="error-message">{{ uploadError }}</p>
       </div>
-      <div class="results-container" *ngIf="analysisResults" #resultsContainer>
+      <div class="results-container" #resultsContainer *ngIf="analysisResults">
         <h2>Analysis Results</h2>
         <div class="results-grid">
           <div class="result-card" *ngFor="let issue of analysisResults.issues" data-animate="result-1">

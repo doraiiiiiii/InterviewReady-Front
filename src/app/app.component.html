@@ -1,39 +1,76 @@
-<nav class="bg-white shadow-md fixed w-full z-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
+<nav class="nav">
+  <div class="max-w-7xl">
+    <div class="flex items-center">
       <div class="flex-shrink-0">
-        <a [routerLink]="['/']" class="logo"></a>
+        <a href="#" class="logo">
+          <img src="/assets/logo.png" alt="InterReady Logo" class="logo-image">
+          <span class="logo-text">InterReady</span>
+        </a>
       </div>
-      <div class="nav-links hidden md:flex">
-        <a [routerLink]="['/']" (click)="showPage('home', $event)" class="nav-link">Home</a>
-        <a [routerLink]="['/interview']" (click)="showPage('interview', $event)" class="nav-link">Interview</a>
-        <a [routerLink]="['/cv-review']" class="nav-link">CV Review</a>
-        <a [routerLink]="['/alumni']" class="nav-link">Alumni Companies</a>
-        <a [routerLink]="['/profile']" class="nav-link">My Profile</a>
-        <a [routerLink]="['/resources']" class="nav-link">Career Resources</a>
+      <div class="flex items-center ml-auto gap-4">
+        <div class="nav-links">
+          <a href="#" (click)="showPage('home', $event)" class="nav-link">Home</a>
+          <a href="#" (click)="showPage('interview', $event)" class="nav-link">Interview</a>
+          <a href="#" (click)="showPage('cv-optimizer', $event)" class="nav-link">CV Optimizer</a>
+          <a href="#" (click)="showPage('company-listing', $event)" class="nav-link">Company Listings</a>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            class="theme-toggle"
+            [ngClass]="{ 'dark': isDarkMode }"
+            (click)="toggleTheme()"
+            aria-label="Toggle dark mode"
+          >
+            <svg
+              *ngIf="!isDarkMode"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              ></path>
+            </svg>
+            <svg
+              *ngIf="isDarkMode"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              ></path>
+            </svg>
+          </button>
+          <div class="mobile-menu-toggle">
+            <button id="menu-button" (click)="toggleMobileMenu()" class="menu-button">
+              <svg class="menu-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="nav-actions hidden md:flex">
-        <button class="lang-switch">EN</button>
-        <a [routerLink]="['/contact']" class="get-in-touch">Get in Touch</a>
-      </div>
-      <button id="menu-button" class="mobile-menu-btn md:hidden" (click)="toggleMobileMenu()">
-        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-        </svg>
-      </button>
-    </div>
-    <div id="mobile-menu" class="md:hidden" [class.active]="mobileMenuOpen">
-      <a [routerLink]="['/']" (click)="showPage('home', $event); toggleMobileMenu()" class="mobile-nav-link">Home</a>
-      <a [routerLink]="['/interview']" (click)="showPage('interview', $event); toggleMobileMenu()" class="mobile-nav-link">Interview</a>
-      <a [routerLink]="['/cv-review']" (click)="toggleMobileMenu()" class="mobile-nav-link">CV Review</a>
-      <a [routerLink]="['/alumni']" (click)="toggleMobileMenu()" class="mobile-nav-link">Alumni Companies</a>
-      <a [routerLink]="['/profile']" (click)="toggleMobileMenu()" class="mobile-nav-link">My Profile</a>
-      <a [routerLink]="['/resources']" (click)="toggleMobileMenu()" class="mobile-nav-link">Career Resources</a>
-      <a [routerLink]="['/contact']" class="get-in-touch mobile-nav-link">Get in Touch</a>
     </div>
   </div>
+  <div id="mobile-menu" class="mobile-menu" [class.active]="mobileMenuOpen">
+    <a href="#" (click)="showPage('home', $event); toggleMobileMenu()" class="mobile-link">Home</a>
+    <a href="#" (click)="showPage('interview', $event); toggleMobileMenu()" class="mobile-link">Interview</a>
+    <a href="#" (click)="showPage('cv-optimizer', $event); toggleMobileMenu()" class="mobile-link">CV Optimizer</a>
+    <a href="#" (click)="showPage('company-listing', $event); toggleMobileMenu()" class="mobile-link">Company Listings</a>
+  </div>
 </nav>
-<div class="pt-[var(--nav-height)]">
+<div class="content">
   <app-homepage *ngIf="currentPage === 'home'"></app-homepage>
   <app-chatbotinterview *ngIf="currentPage === 'interview'"></app-chatbotinterview>
+  <app-cv-optimizer *ngIf="currentPage === 'cv-optimizer'"></app-cv-optimizer>
+  <app-company-listing *ngIf="currentPage === 'company-listing'"></app-company-listing>
 </div>
